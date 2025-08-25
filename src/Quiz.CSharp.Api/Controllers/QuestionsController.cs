@@ -1,3 +1,5 @@
+using Quiz.CSharp.Api.Contracts.Dto;
+
 namespace Quiz.CSharp.Api.Controllers;
 
 using Microsoft.AspNetCore.Authorization;
@@ -11,7 +13,7 @@ using Quiz.CSharp.Data.Models;
 [ApiController]
 [Route("api/csharp/questions")]
 [Produces("application/json")]
-[RequireSubscription("csharp-quiz")]
+//[RequireSubscription("csharp-quiz")]
 public sealed class QuestionsController(
     IQuestionService questionService,
     IMapper mapper) : ControllerBase
@@ -59,5 +61,22 @@ public sealed class QuestionsController(
     {
         var response = await questionService.CreateQuestionAsync(mapper.Map<CreateQuestionModel>(request), cancellationToken);
         return Ok(new ApiResponse<CreateQuestionResponse>(response.Value));
+    }
+    
+    [HttpPut("{collectionId:int}")]
+   // [Authorize("Admin:Write")]
+    [ProducesResponseType<ApiResponse<CreateQuestionResponse>>(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    public async Task<IActionResult> UpdateQuestion(
+        int collectionId,
+        [FromBody] UpdateQuestionDto dto,
+        CancellationToken cancellationToken = default)
+    {
+        var response = await questionService.UpdateQuestionAsync(
+           collectionId:  collectionId, mapper.Map<UpdateQuestionModel>(dto), 
+           cancellationToken);
+        
+        return Ok(new ApiResponse<UpdateQuestionResponse>(response.Value));
     }
 } 
