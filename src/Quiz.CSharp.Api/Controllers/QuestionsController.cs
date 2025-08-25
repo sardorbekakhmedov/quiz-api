@@ -13,7 +13,7 @@ using Quiz.CSharp.Data.Models;
 [ApiController]
 [Route("api/csharp/questions")]
 [Produces("application/json")]
-//[RequireSubscription("csharp-quiz")]
+[RequireSubscription("csharp-quiz")]
 public sealed class QuestionsController(
     IQuestionService questionService,
     IMapper mapper) : ControllerBase
@@ -64,7 +64,7 @@ public sealed class QuestionsController(
     }
     
     [HttpPut("{collectionId:int}")]
-   // [Authorize("Admin:Write")]
+    [Authorize("Admin:Write")]
     [ProducesResponseType<ApiResponse<CreateQuestionResponse>>(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
